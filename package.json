@@ -41,6 +41,7 @@
     "@types/jsdom": "^11.0.2",
     "@types/sinon": "^2.3.4",
     "codecov.io": "0.1.6",
+    "dijit": "^1.13.0",
     "dojo": "^1.13.0",
     "grunt": "~1.0.1",
     "grunt-dojo2": "latest",

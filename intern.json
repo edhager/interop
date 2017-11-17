@@ -19,7 +19,8 @@
 				{ "name": "src", "location": "_build/src" },
 				{ "name": "tests", "location": "_build/tests" },
 				{ "name": "@dojo", "location": "node_modules/@dojo" },
-				{ "name": "dojo", "location": "node_modules/intern/node_modules/dojo" },
+				{ "name": "dojo", "location": "node_modules/dojo" },
+				{ "name": "dijit", "location": "node_modules/dijit" },
 				{ "name": "redux", "location": "node_modules/redux/dist", "main": "redux" },
 				{ "name": "pepjs", "location": "node_modules/pepjs/dist", "main": "pep" },
 				{ "name": "sinon", "location": "node_modules/sinon/pkg", "main": "sinon" }

@@ -1,12 +1,12 @@
 // Note: this test is designed to run with the Dojo 1 loader.
 const { registerSuite } = intern.getInterface('object');
 const { assert } = intern.getPlugin('chai');
-import LegacyWrapper from '../../../src/dijit/LegacyWrapper';
+import LegacyWidget from '../../../src/dijit/LegacyWidget';
 
 let sandbox: Element;
-let widget: LegacyWrapper | null;
+let widget: LegacyWidget | null;
 
-registerSuite('dijit/LegacyWrapper', {
+registerSuite('dijit/LegacyWidget', {
 	beforeEach: function () {
 		sandbox = document.createElement('div');
 		sandbox.id = 'sandbox';
@@ -20,7 +20,7 @@ registerSuite('dijit/LegacyWrapper', {
 
 	tests: {
 		'wrap a widget'() {
-			widget = new LegacyWrapper({
+			widget = new LegacyWidget({
 				module: 'tests/unit/dijit/TestDojo2Widget'
 			});
 			widget.placeAt(sandbox);

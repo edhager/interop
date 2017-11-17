@@ -16,17 +16,15 @@
 			"es2015.iterable",
 			"es2015.promise",
 			"es2015.symbol",
-			"es2015.symbol.wellknown"
+			"es2015.symbol.wellknown",
+			"scripthost"
 		],
 		"types": [ "intern" ]
 	},
 	"include": [
 		"./src/**/*.ts",
-		"./tests/**/*.ts"
-	],
-	"exclude": [
-		"_build",
-		"dist",
-		"node_modules"
+		"./tests/**/*.ts",
+		"node_modules/dojo-typings/dojo/1.11/modules.d.ts",
+		"node_modules/dojo-typings/dijit/1.11/modules.d.ts"
 	]
 }
