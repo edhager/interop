@@ -6,8 +6,6 @@ import DijitWrapper from '../../../src/dijit/DijitWrapper';
 
 import { v, w } from '@dojo/widget-core/d';
 
-let lastDestroyPreserveDom: boolean;
-
 class MockDijit {
 	public id: string;
 	public srcNodeRef: HTMLElement;
@@ -16,7 +14,6 @@ class MockDijit {
 	constructor(params: Object, srcRefNode?: string | Node) { }
 
 	public destroy(preserveDom = false) {
-		lastDestroyPreserveDom = false;
 	}
 
 	public placeAt(node: HTMLElement, reference?: string | number) {
