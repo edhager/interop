@@ -18,7 +18,7 @@ registerSuite('dijit/LegacyWidget', {
 	},
 
 	tests: {
-		'render a wrapped a widget'() {
+		'widget should render'() {
 			widget = new LegacyWidget({
 				moduleId: 'tests/unit/dijit/TestDojo2Widget',
 				label: 'Hello World!'
@@ -34,7 +34,7 @@ registerSuite('dijit/LegacyWidget', {
 			});
 		},
 
-		'move a wrapped widget'() {
+		'widget should move within the DOM'() {
 			const node1 = document.createElement('div');
 			const node2 = document.createElement('div');
 			sandbox.appendChild(node1);
@@ -63,17 +63,22 @@ registerSuite('dijit/LegacyWidget', {
 			});
 		},
 
-		'change a widget property'() {
+		'widget should update when a property changes'() {
 			widget = new LegacyWidget({
 				moduleId: 'tests/unit/dijit/TestDojo2Widget',
 				label: 'Hello World!'
 			});
 			widget.placeAt(sandbox);
-			return widget.startup().then(() => {
+
+			const dfd = this.async();
+			widget.startup().then(dfd.rejectOnError(() => {
 				widget.set('label', 'Goodbye');
 				let firstChild = sandbox.firstChild && sandbox.firstChild.firstChild;
-				assert.strictEqual('Goodbye', firstChild && firstChild.textContent);
-			});
+				setTimeout(dfd.rejectOnError(() => {
+					assert.strictEqual('Goodbye', firstChild && firstChild.textContent);
+					dfd.resolve();
+				}), 100);
+			}));
 		}
 	}
 });
