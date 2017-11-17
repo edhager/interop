@@ -21,14 +21,17 @@ registerSuite('dijit/LegacyWidget', {
 	tests: {
 		'wrap a widget'() {
 			widget = new LegacyWidget({
-				module: 'tests/unit/dijit/TestDojo2Widget'
+				moduleId: 'tests/unit/dijit/TestDojo2Widget'
 			});
 			widget.placeAt(sandbox);
 
 			const dfd = this.async();
 			setTimeout(dfd.callback(() => {
 				assert.strictEqual(1, sandbox.childNodes.length);
-				assert.strictEqual('button', sandbox.firstChild && sandbox.firstChild.nodeName.toLowerCase());
+				let firstChild = sandbox.firstChild;
+				assert.strictEqual('div', firstChild && firstChild.nodeName.toLowerCase());
+				firstChild = firstChild && firstChild.firstChild;
+				assert.strictEqual('button', firstChild && firstChild.nodeName.toLowerCase());
 			}), 50);
 		}
 	}

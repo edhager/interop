@@ -7,47 +7,35 @@ import declareDecorator from './declareDecorator';
 import * as _WidgetBase from 'dijit/_WidgetBase';
 
 interface LegacyWidget extends dijit._WidgetBase {
-	module: string;
-	projector: ProjectorMixin<WidgetProperties>;
-	reference: dojo.NodeFragmentOrString | dijit._WidgetBase;
-	nodePosition: string | number | undefined;
+	widgetParams: any;
+	moduleId: string;
 }
 
 @declareDecorator(_WidgetBase)
 class LegacyWidget {
 
-	reference: dojo.NodeFragmentOrString | dijit._WidgetBase;
+	widgetParams: any;
+	moduleId: string;
 
 	constructor(params: any) {
-		const module: string = params.module;
-		if (!module) {
-			throw new Error('"module" property must be set.');
+		const moduleId: string = params.moduleId;
+		if (!moduleId) {
+			throw new Error('"moduleId" property must be set.');
 		}
-		const widgetParams = mixin({}, params);
-		delete widgetParams.module;
+		const widgetParams = this.widgetParams = mixin({}, params);
+		delete widgetParams.moduleId;
 		mixin(this, widgetParams);
-
-		(<any> require)([ module ], (WidgetModule: any) => {
-			const WidgetConstructor: Constructor<WidgetBase<WidgetProperties>> = WidgetModule.default;
-			const Projector = ProjectorMixin(WidgetConstructor);
-			this.projector = new Projector(widgetParams);
-			if (this.reference) {
-				this.placeAt(this.reference, this.nodePosition);
-			}
-		});
 	}
 
-	placeAt(reference: dojo.NodeFragmentOrString | dijit._WidgetBase, position?: string | number): this {
-		if (!this.projector) {
-			// The widget module hasn't loaded yet.  When the require statement resolves,
-			// the widget will be positioned.
-			this.reference = reference;
-			this.nodePosition = position;
-		} else {
-			(<any> this).__proto__.__proto__.placeAt.call(this, reference, position);
-			this.projector.replace(this.domNode);
-		}
-		return this;
+	postCreate() {
+		(<any> require)([ this.moduleId ], (WidgetModule: any) => {
+			const WidgetConstructor: Constructor<WidgetBase<WidgetProperties>> = WidgetModule.default;
+			const Projector = ProjectorMixin(WidgetConstructor);
+			const projector = new Projector(this.widgetParams);
+			// Append the projector to this.domNode (versus replace) so the domNode can be moved around
+			// by placeAt.
+			projector.append(this.domNode);
+		});
 	}
 }
 
