@@ -4,7 +4,7 @@ const { assert } = intern.getPlugin('chai');
 import LegacyWidget from '../../../src/dijit/LegacyWidget';
 
 let sandbox: Element;
-let widget: LegacyWidget | null;
+let widget: LegacyWidget;
 
 registerSuite('dijit/LegacyWidget', {
 	beforeEach: function () {
@@ -15,24 +15,65 @@ registerSuite('dijit/LegacyWidget', {
 
 	afterEach: function () {
 		widget && widget.destroy();
-		widget = null;
 	},
 
 	tests: {
-		'wrap a widget'() {
+		'render a wrapped a widget'() {
 			widget = new LegacyWidget({
-				moduleId: 'tests/unit/dijit/TestDojo2Widget'
+				moduleId: 'tests/unit/dijit/TestDojo2Widget',
+				label: 'Hello World!'
 			});
 			widget.placeAt(sandbox);
-
-			const dfd = this.async();
-			setTimeout(dfd.callback(() => {
+			return widget.startup().then(() => {
 				assert.strictEqual(1, sandbox.childNodes.length);
 				let firstChild = sandbox.firstChild;
 				assert.strictEqual('div', firstChild && firstChild.nodeName.toLowerCase());
 				firstChild = firstChild && firstChild.firstChild;
 				assert.strictEqual('button', firstChild && firstChild.nodeName.toLowerCase());
-			}), 50);
+				assert.strictEqual('Hello World!', firstChild && firstChild.textContent);
+			});
+		},
+
+		'move a wrapped widget'() {
+			const node1 = document.createElement('div');
+			const node2 = document.createElement('div');
+			sandbox.appendChild(node1);
+			sandbox.appendChild(node2);
+
+			widget = new LegacyWidget({
+				moduleId: 'tests/unit/dijit/TestDojo2Widget',
+				label: 'Hello!'
+			});
+			widget.placeAt(node1);
+			return widget.startup().then(() => {
+				assert.strictEqual(1, node1.childNodes.length, 'node1 has no children');
+				let firstChild = node1.firstChild;
+				assert.strictEqual('div', firstChild && firstChild.nodeName.toLowerCase());
+				firstChild = firstChild && firstChild.firstChild;
+				assert.strictEqual('button', firstChild && firstChild.nodeName.toLowerCase());
+				assert.strictEqual(0, node2.childNodes.length, 'node2 has children that it should not');
+
+				widget.placeAt(node2);
+				assert.strictEqual(0, node1.childNodes.length, 'widget did not move away from node1');
+				assert.strictEqual(1, node2.childNodes.length, 'widget did not move to node2');
+				firstChild = node2.firstChild;
+				assert.strictEqual('div', firstChild && firstChild.nodeName.toLowerCase());
+				firstChild = firstChild && firstChild.firstChild;
+				assert.strictEqual('button', firstChild && firstChild.nodeName.toLowerCase());
+			});
+		},
+
+		'change a widget property'() {
+			widget = new LegacyWidget({
+				moduleId: 'tests/unit/dijit/TestDojo2Widget',
+				label: 'Hello World!'
+			});
+			widget.placeAt(sandbox);
+			return widget.startup().then(() => {
+				widget.set('label', 'Goodbye');
+				let firstChild = sandbox.firstChild && sandbox.firstChild.firstChild;
+				assert.strictEqual('Goodbye', firstChild && firstChild.textContent);
+			});
 		}
 	}
 });
