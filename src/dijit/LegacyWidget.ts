@@ -51,7 +51,7 @@ class LegacyWidget {
 
 		this.watch(() => {
 			this.projector && this.projector.invalidate();
-		})
+		});
 	}
 
 	startup() {
